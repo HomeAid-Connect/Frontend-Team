@@ -22,5 +22,5 @@
 }
 
 .label {
-    @apply text-sm font-semibold text-purple-900;
+    @apply text-sm font-semibold text-purple-900 mt-2;
 }

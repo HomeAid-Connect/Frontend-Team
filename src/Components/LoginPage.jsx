@@ -1,7 +1,6 @@
 import logo from "../assets/logo.png";
 import logoDark from "../assets/logo.jpeg";
 import artisans from "../assets/workers-login.png";
-import {} from "@heroicons/react/16/solid";
 import { MdAccountBalanceWallet, MdSecurity } from "react-icons/md";
 import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiHide, BiShow } from "react-icons/bi";
