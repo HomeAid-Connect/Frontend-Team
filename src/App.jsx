@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import LoginPage from './Components/LoginPage'
 import RegisterPage from './Components/RegisterPage'
+import Dashboard from './Components/Dashboard'
 
 function App() {
 
@@ -8,6 +9,7 @@ function App() {
     <>
     {/* <LoginPage/> */}
     <RegisterPage/>
+    {/* <Dashboard/> */}
     </>
   )
 }

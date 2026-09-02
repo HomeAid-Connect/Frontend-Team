@@ -4,8 +4,9 @@ import logoLight from "../assets/logo.png";
 import artisans from "../assets/workers-login.png";
 import { MdSecurity } from "react-icons/md";
 import { GrMailOption, GrUserWorker } from "react-icons/gr";
-import { BiHide, BiShow } from "react-icons/bi";
+import { BiCalendar, BiHide, BiShow } from "react-icons/bi";
 import { FaUser, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
+import {ArtisanLists} from '../data/ArtisanLists'
 
 export default function RegisterPage() {
   const states = [
@@ -20,17 +21,7 @@ export default function RegisterPage() {
     "Osun",
   ];
 
-  const artisanServices = [
-    "Plumbing",
-    "Electrical",
-    "Carpentry",
-    "Cleaning",
-    "Painting",
-    "Home Repair",
-    "Laundry",
-    "Gardening",
-  ];
-
+ 
   const [activeRole, setActiveRole] = useState("customer");
   const isCustomer = (activeRole === "customer");
 
@@ -43,7 +34,7 @@ export default function RegisterPage() {
   return (
     <section className="relative overflow-hidden font-manrope">
       <div className="flex min-h-screen items-center justify-center px-3 py-6 sm:px-4 lg:p-8">
-        <div className="flex w-full max-w-6xl overflow-hidden rounded-4xl bg-amber-300 shadow-[0_20px_60px_rgba(76,29,149,0.12)]">
+        <div className="flex w-full max-w-6xl overflow-hidden rounded-4xl shadow-[0_20px_60px_rgba(76,29,149,0.12)]">
           <div className="hidden w-[38%] bg-linear-to-br from-purple-900 via-violet-900 to-fuchsia-800 p-8 text-white lg:flex lg:flex-col lg:justify-between">
             <div>
                 <img src={logoLight} alt="HomeAid Logo" className="mb-10 h-25 rounded-xl " />
@@ -236,7 +227,7 @@ export default function RegisterPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="sm:col-span-2">
+                    <div className="">
                     <label className="label" htmlFor="serviceCategory">
                       Service Category
                     </label>
@@ -251,11 +242,45 @@ export default function RegisterPage() {
                         <option value="" disabled>
                           Select your craft
                         </option>
-                        {artisanServices.map((service, index) => (
-                          <option key={index} value={service}>
-                            {service}
+                        {ArtisanLists.map((service) => (
+                          <option key={service.id} value={service.title}>
+                            {service.title}
                           </option>
                         ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="">
+                    <label className="label" htmlFor="experience">
+                      Years of Professional Experience
+                    </label>
+                    <div className="input-field">
+                      <BiCalendar className="text-purple-500" />
+                      <select
+                        name="experience"
+                        id="experience"
+                        defaultValue=""
+                        className="w-full bg-transparent focus:outline-none"
+                      >
+                        <option value="" disabled>
+                          Select year
+                        </option>
+                        <option value="<1">
+                          Less than 1 year
+                        </option>
+                        <option value="1-2" >
+                          1-2 years
+                        </option>
+                        <option value="3-5" >
+                          3-5 years
+                        </option>
+                        <option value="5-10" >
+                          5-10 years
+                        </option>
+                        <option value="10+" >
+                          10 years and above
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -272,6 +297,20 @@ export default function RegisterPage() {
                       placeholder="e.g. Lekki, Surulere, Yaba, Ikeja"
                     />
                   </div>
+
+                   <div className="sm:col-span-2">
+                    <label className="label" htmlFor="workExperience">
+                      Tell us about your work Experience above
+                    </label>
+                    <textarea
+                      id="workExperience"
+                      name="workExperience"
+                      rows="3"
+                      className="mt-1 w-full rounded-xl border-2 border-purple-200 bg-white px-4 py-3 text-purple-800 placeholder:text-purple-400 focus:border-purple-400 focus:outline-none"
+                      placeholder="Describe your experience so far"
+                    />
+                  </div>
+
                 </div>
               )}
 

@@ -3,6 +3,8 @@
 @theme {
     --font-manrope: "Manrope", sans-serif;
     --font-inter: "Inter", sans-serif;
+    --breakpoint-xs:  32rem;
+    --breakpoint-tablet:  57rem;
 }
 
 .input-field { 
