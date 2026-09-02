@@ -8,7 +8,7 @@ import { BiCalendar, BiHide, BiShow } from "react-icons/bi";
 import { FaUser, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import {ArtisanLists} from '../data/ArtisanLists'
 
-export default function RegisterPage() {
+export default function RegisterPage({role}) {
   const states = [
     "Abia",
     "Abuja",
@@ -22,7 +22,7 @@ export default function RegisterPage() {
   ];
 
  
-  const [activeRole, setActiveRole] = useState("customer");
+  const [activeRole, setActiveRole] = useState({role});
   const isCustomer = (activeRole === "customer");
 
   const availableStatesJSX = states.map((state, index) => (
