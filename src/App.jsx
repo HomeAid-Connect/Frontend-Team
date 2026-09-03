@@ -14,8 +14,8 @@ function App() {
 <Routes>
   <Route path='/' element={<LandingPage/>}/>
   <Route path='/login' element={<LoginPage/>}/>
-  <Route path='/register/customer' element={<RegisterPage/>}/>
-  <Route path='/register/artisan' element={<RegisterPage/>}/>
+  <Route path='/register/customer' element={<RegisterPage role={'customer'}/>}/>
+  <Route path='/register/artisan' element={<RegisterPage role={'artisan'}/>}/>
   <Route path='/dashboard' element={<Dashboard/>}/>
   <Route path='/register/otp' element={<OtpScreen/>}/>
 </Routes>

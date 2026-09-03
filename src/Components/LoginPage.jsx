@@ -6,8 +6,6 @@ import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiHide, BiShow } from "react-icons/bi";
 import { Link } from "react-router";
 import {useState} from 'react'
-import { CircleStackIcon } from "@heroicons/react/24/outline";
-import { BsCircleHalf } from "react-icons/bs";
 import { ImSpinner2 } from "react-icons/im";
 
 export default function LoginPage() {
@@ -16,7 +14,7 @@ export default function LoginPage() {
   const [emailError, setEmailError] = useState({value: false, message: ""})
   const [passwordError, setPasswordError] = useState({value: false, message: "Welcome back"})
   const [formState, setFormState] = useState({
-    loading: true,
+    loading: false,
     error: false,
     success: false,
   })

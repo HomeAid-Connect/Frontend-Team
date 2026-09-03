@@ -2,14 +2,14 @@ import { useState } from "react";
 import logoDark from "../assets/logo.jpeg";
 import logoLight from "../assets/logo.png";
 import artisans from "../assets/workers-login.png";
-import { MdSecurity } from "react-icons/md";
+import { MdCancel, MdSecurity } from "react-icons/md";
 import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiCalendar, BiHide, BiShow } from "react-icons/bi";
 import { FaUser, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { ArtisanLists } from "../data/ArtisanLists";
 import { Link } from "react-router";
 
-export default function RegisterPage({role}) {
+export default function RegisterPage({ role }) {
   const states = [
     "Abia",
     "Abuja",
@@ -22,9 +22,12 @@ export default function RegisterPage({role}) {
     "Osun",
   ];
 
- 
-  const [activeRole, setActiveRole] = useState("customer");
-  const isCustomer = (activeRole === "customer");
+  const [activeRole, setActiveRole] = useState(role);
+  const isCustomer = activeRole === "customer";
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [locationInput, setLocationInput] = useState("");
+  const [workLocations, setWorkLocations] = useState(["Aba"])
 
   const availableStatesJSX = states.map((state, index) => (
     <option key={index} value={state}>
@@ -32,13 +35,45 @@ export default function RegisterPage({role}) {
     </option>
   ));
 
+  function addLocation() {
+setWorkLocations(prev => {
+  if(prev.some(i => i.toLowerCase() === locationInput.toLowerCase())) {
+    setLocationInput("")
+    alert("Location already exists")
+    return prev
+  }
+  if(locationInput.length < 2) {
+    setLocationInput("")
+    alert("Enter a valid location")
+    return prev 
+  }
+  else {
+    setLocationInput("")
+    const formattedLocation = locationInput
+      .trim()
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+    return [...prev, formattedLocation]
+  }
+})
+  }
+
+  function deleteLocation(i) {
+    setWorkLocations(prev => prev.filter(prevv => prevv !== i))
+    console.log(workLocations)
+  }
+
   return (
     <section className="relative overflow-hidden font-manrope">
       <div className="flex min-h-screen items-center justify-center px-3 py-6 sm:px-4 lg:p-8">
         <div className="flex w-full max-w-6xl overflow-hidden rounded-4xl shadow-[0_20px_60px_rgba(76,29,149,0.12)]">
           <div className="hidden w-[38%] bg-linear-to-br from-purple-900 via-violet-900 to-fuchsia-800 p-8 text-white lg:flex lg:flex-col lg:justify-between">
             <div>
-                <img src={logoLight} alt="HomeAid Logo" className="mb-10 h-25 rounded-xl " />
+              <img
+                src={logoLight}
+                alt="HomeAid Logo"
+                className="mb-10 h-25 rounded-xl "
+              />
 
               <div className="mb-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.25em] text-purple-200">
@@ -51,16 +86,21 @@ export default function RegisterPage({role}) {
             </div>
 
             <div className="rounded-3xl bg-white/20  backdrop-blur-sm">
-              <img src={artisans} alt="HomeAid artisans" className=" w-full rounded-2xl object-cover" />
+              <img
+                src={artisans}
+                alt="HomeAid artisans"
+                className=" w-full rounded-2xl object-cover"
+              />
             </div>
 
             <p className="text-sm text-purple-100">
-              Join as a customer to request services or as an artisan to showcase your skills and get hired.
+              Join as a customer to request services or as an artisan to
+              showcase your skills and get hired.
             </p>
           </div>
 
           <div className="w-full bg-purple-50 p-5 sm:p-6 lg:p-8">
-            <div className="mb-6 flex justify-center lg:justify-start">
+            <div className="mb-6 flex justify-center lg:hidden lg:justify-start">
               <img src={logoDark} alt="HomeAid Logo" width={170} />
             </div>
 
@@ -77,19 +117,20 @@ export default function RegisterPage({role}) {
               {[
                 { key: "customer", label: "Customer" },
                 { key: "artisan", label: "Artisan" },
-              ].map(role => (
-                <button
+              ].map((role) => (
+                <Link
                   key={role.key}
                   type="button"
                   onClick={() => setActiveRole(role.key)}
-                  className={`rounded-xl px-4 py-3 text-sm font-semibold transition-all ${
+                  to={`/register/${role.key}`}
+                  className={`rounded-xl px-4 py-3 text-sm font-semibold text-center transition-all ${
                     activeRole === role.key
                       ? "bg-purple-700 text-white shadow-md"
                       : "text-purple-800 hover:bg-purple-200"
                   }`}
                 >
                   {role.label}
-                </button>
+                </Link>
               ))}
             </div>
 
@@ -105,8 +146,11 @@ export default function RegisterPage({role}) {
                       type="text"
                       name="fullName"
                       id="fullName"
+                      required
                       className="w-full bg-transparent focus:outline-none"
-                      placeholder={isCustomer ? "e.g. Ada Johnson" : "e.g. Daniel Ikpe"}
+                      placeholder={
+                        isCustomer ? "e.g. Ada Johnson" : "e.g. Daniel Ikpe"
+                      }
                     />
                   </div>
                 </div>
@@ -121,6 +165,7 @@ export default function RegisterPage({role}) {
                       type="tel"
                       name="phone"
                       id="phone"
+                      required
                       className="w-full bg-transparent focus:outline-none"
                       placeholder="e.g. +234 800 000 0000"
                     />
@@ -136,6 +181,7 @@ export default function RegisterPage({role}) {
                     <select
                       name="state"
                       id="state"
+                      required
                       defaultValue=""
                       className="w-full bg-transparent focus:outline-none"
                     >
@@ -163,7 +209,6 @@ export default function RegisterPage({role}) {
                   </div>
                 </div>
 
-
                 <div className="sm:col-span-2">
                   <label className="label" htmlFor="password">
                     Password
@@ -171,14 +216,14 @@ export default function RegisterPage({role}) {
                   <div className="input-field">
                     <MdSecurity className="text-purple-500" />
                     <input
-                      type="password"
+                      type={isPasswordVisible ? "text" : "password"}
                       name="password"
                       id="password"
+                      required
                       className="w-full bg-transparent focus:outline-none"
                       placeholder="Create a strong password"
                     />
-                    <BiShow className="cursor-pointer text-lg text-purple-500" />
-                    <BiHide className="hidden cursor-pointer text-lg text-purple-500" />
+                    {isPasswordVisible ? <BiHide onClick={() => setIsPasswordVisible(i => !i)} className="cursor-pointer"/> : <BiShow onClick={() => setIsPasswordVisible(i => !i)} className="cursor-pointer"/>}
                   </div>
                 </div>
 
@@ -189,14 +234,14 @@ export default function RegisterPage({role}) {
                   <div className="input-field">
                     <MdSecurity className="text-purple-500" />
                     <input
-                      type="confirm-password"
+                      type={isConfirmPasswordVisible ? "text" : "password"}
                       name="confirm-password"
                       id="password"
+                      required
                       className="w-full bg-transparent focus:outline-none"
                       placeholder="Create a strong password"
                     />
-                    <BiShow className="cursor-pointer text-lg text-purple-500" />
-                    <BiHide className="hidden cursor-pointer text-lg text-purple-500" />
+                     {isConfirmPasswordVisible ? <BiHide onClick={() => setIsConfirmPasswordVisible(i => !i)} className="cursor-pointer"/> : <BiShow onClick={() => setIsConfirmPasswordVisible(i => !i)} className="cursor-pointer"/>}
                   </div>
                 </div>
               </div>
@@ -216,7 +261,7 @@ export default function RegisterPage({role}) {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div className="">
+                  <div className="">
                     <label className="label" htmlFor="serviceCategory">
                       Service Category
                     </label>
@@ -255,62 +300,52 @@ export default function RegisterPage({role}) {
                         <option value="" disabled>
                           Select year
                         </option>
-                        <option value="<1">
-                          Less than 1 year
-                        </option>
-                        <option value="1-2" >
-                          1-2 years
-                        </option>
-                        <option value="3-5" >
-                          3-5 years
-                        </option>
-                        <option value="5-10" >
-                          5-10 years
-                        </option>
-                        <option value="10+" >
-                          10 years and above
-                        </option>
+                        <option value="<1">Less than 1 year</option>
+                        <option value="1-2">1-2 years</option>
+                        <option value="3-5">3-5 years</option>
+                        <option value="5-10">5-10 years</option>
+                        <option value="10+">10 years and above</option>
                       </select>
                     </div>
                   </div>
 
                   <div className="sm:col-span-2">
                     <label className="label" htmlFor="workLocations">
-                      Locations You Can Work
+                      Locations You Can Work (Multiple)
                     </label>
-                    <textarea
-                      id="workLocations"
-                      name="workLocations"
-                      rows="3"
-                      className="mt-1 w-full rounded-xl border-2 border-purple-200 bg-white px-4 py-3 text-purple-800 placeholder:text-purple-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="e.g. Lekki, Surulere, Yaba, Ikeja"
+                    <div className="input-field px-0! py-0!">
+                    <input  
+                      type="text"
+                      value={locationInput}
+                      onChange={(e) => setLocationInput(e.target.value)}
+                      required
+                      className="w-full bg-transparent ml-4 focus:outline-none"
+                      placeholder="Click 'Add' to add each loaction"
                     />
+                     <button className="btn primary-btn w-fit!" onClick={addLocation} type="button">Add</button>
                   </div>
-
-                   <div className="sm:col-span-2">
-                    <label className="label" htmlFor="workExperience">
-                      Tell us about your work Experience above
-                    </label>
-                    <textarea
-                      id="workExperience"
-                      name="workExperience"
-                      rows="3"
-                      className="mt-1 w-full rounded-xl border-2 border-purple-200 bg-white px-4 py-3 text-purple-800 placeholder:text-purple-400 focus:border-purple-400 focus:outline-none"
-                      placeholder="Describe your experience so far"
-                    />
+                  <div className="mt-2 p-2 border-t border-b border-purple-200 min-h-4 flex items-center gap-2">
+                    {workLocations.map(i => <span className={"bg-purple-400 rounded-sm p-1 flex gap-1 text-white text-xs"}>
+                      {i} <button onClick={() => deleteLocation(i)}  type='button'><MdCancel/></button>
+                    </span>)}
                   </div>
-
+                  </div>
                 </div>
               )}
 
               <button type="submit" className="primary-btn btn mt-2">
-                {isCustomer ? "Create Customer Account" : "Create Artisan Account"}
+                {isCustomer
+                  ? "Create Customer Account"
+                  : "Create Artisan Account"}
               </button>
             </form>
 
             <div className="mt-6 text-center text-sm text-purple-800">
-              Already have an account? {" "}
-              <Link to="/login" className="font-semibold text-purple-700 hover:underline">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="font-semibold text-purple-700 hover:underline"
+              >
                 Log in
               </Link>
             </div>
