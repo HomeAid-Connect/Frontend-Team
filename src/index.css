@@ -12,11 +12,11 @@
 }
 
 .primary-btn {
-    @apply  text-white  bg-purple-700 w-full hover:bg-purple-900 transition-all 
+    @apply  text-white  bg-purple-700 w-full hover:bg-purple-900 transition-all  disabled:bg-purple-800/50
 }
 
 .btn {
-    @apply py-2 px-4 rounded-lg font-semibold cursor-pointer transition-all 
+    @apply py-2 px-4 rounded-lg font-semibold cursor-pointer transition-all  disabled:cursor-not-allowed
 }
 
 .secondary-btn {

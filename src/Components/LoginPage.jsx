@@ -4,11 +4,25 @@ import artisans from "../assets/workers-login.png";
 import { MdAccountBalanceWallet, MdSecurity } from "react-icons/md";
 import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiHide, BiShow } from "react-icons/bi";
+import { Link } from "react-router";
+import {useState} from 'react'
+import { CircleStackIcon } from "@heroicons/react/24/outline";
+import { BsCircleHalf } from "react-icons/bs";
+import { ImSpinner2 } from "react-icons/im";
 
 export default function LoginPage() {
+
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+  const [emailError, setEmailError] = useState({value: false, message: ""})
+  const [passwordError, setPasswordError] = useState({value: false, message: "Welcome back"})
+  const [formState, setFormState] = useState({
+    loading: true,
+    error: false,
+    success: false,
+  })
   return (
     <section className="overflow-hidden relative font-manrope">
-      <div className="flex justify-center md:h-screen items-center sm:p-1 lg:p-8">
+      <div className="flex justify-center  items-center sm:p-1 lg:p-8">
         <div className="flex max-w-4xl md:m-3 bg-amber-300 w-full rounded-4xl overflow-hidden ">
           <div className="bg-linear-to-r w-full grow-2 hidden md:flex  from-purple-950 from  items-center justify-between flex-col to-purple-800">
             <div className="justify-self-center mt-5">
@@ -22,7 +36,7 @@ export default function LoginPage() {
           </div>
 
           <div className="w-full p-4 my-auto md:p-7 sm:p-10 bg-purple-50  flex justify-center flex-col">
-          <div className="self-center md:hidden">
+            <div className="self-center md:hidden">
               <img src={logoDark} alt="HomeAid Logo" width={180} />
             </div>
 
@@ -38,7 +52,7 @@ export default function LoginPage() {
 
             <form action="" className="mt-6 mb-2">
               {/* form-control */}
-              <div>
+              <div className="mb-4">
                 <label className="label" htmlFor="email">
                   Email Address
                 </label>
@@ -50,33 +64,34 @@ export default function LoginPage() {
                     id="email"
                     className="w-full focus:outline-none"
                     placeholder="Enter your mail"
+                    required
                   />
                 </div>
-                <p className="text-red-600 mt-2 text-xs mb-4">
-                  Enter correct mail
-                </p>
+               {emailError.value && <p className="text-red-600 mt-2 text-xs">
+                  {emailError.message}
+                </p>}
               </div>
 
               {/* form-control */}
-              <div>
+              <div className="mb-4">
                 <label className="label" htmlFor="password">
                   Password
                 </label>
                 <div className="input-field">
                   <MdSecurity />
                   <input
-                    type="password"
+                    type={isPasswordVisible ? "text" : "password"}
                     name="password"
                     id="password"
                     className="w-full focus:outline-none"
                     placeholder="Enter your password"
+                    required
                   />
-                  <BiShow/>
-                  <BiHide/>
+                  {isPasswordVisible ? <BiHide onClick={() => setIsPasswordVisible(i => !i)} className="cursor-pointer"/> : <BiShow onClick={() => setIsPasswordVisible(i => !i)} className="cursor-pointer"/>}
                 </div>
-                <p className="text-red-600 mt-2 text-xs mb-4">
-                  Enter correct password
-                </p>
+                {passwordError.value && <p className="text-red-600 mt-2 text-xs">
+                  {passwordError.message}
+                </p>}
               </div>
               <a
                 href="#"
@@ -85,14 +100,19 @@ export default function LoginPage() {
                 Forgot Password?
               </a>
 
-              <button type="submit" className="primary-btn btn">
-                Log in
+              <button type="submit" disabled={formState.loading} className="primary-btn btn disabled:bg-red-800/40 disabled:cursor-not-allowed">
+                
+                 {formState.loading ? <span className="flex items-center justify-center gap-2">< ImSpinner2 className="animate-spin w-4 h-4"/>
+                <span> Logging in </span></span> : <span>Log in</span>}
               </button>
             </form>
             {/* This shows the error state of the form */}
-            <div className="bg-red-100 p-3 border-2 border-red-200/70 rounded-md">
-<p className="text-sm text-red-500">Email is incorrect</p>
-            </div>
+            
+            {formState.success | formState.error ? <div className={`${formState.success && 'bg-green-100/80 border-green-800/20'} ${formState.error && 'bg-red-100 border-red-800/20'} rounded-md p-1.5 border`}>
+
+           
+              <p className={`text-sm ${formState.success && 'text-green-700'} ${formState.error && 'text-red-500'}`}>{formState.success ? "Welcome back" : "Try Again"}</p>
+            </div>: null}
 
             <div className="flex gap-3  mt-8 items-center">
               <span className="h-px bg-purple-300 w-full"></span>
@@ -103,20 +123,24 @@ export default function LoginPage() {
               Don't have an Account?
             </p>
 
-           <div className="w-full mt-4">
-             <button className="secondary-btn btn w-full flex items-center justify-center gap-2">
+            <div className="w-full mt-4">
+              <Link
+                to="/register/customer"
+                className="secondary-btn btn w-full flex items-center justify-center gap-2"
+              >
                 <MdAccountBalanceWallet />
-              <span>Sign up as a Customer</span>
-            </button>
+                <span>Sign up as a Customer</span>
+              </Link>
 
-            <button className="secondary-btn mt-2 w-full btn flex items-center justify-center gap-2">
-              <GrUserWorker/>
-              <span>Register as an Artisan</span>
-            </button>
-           </div>
-
+              <Link
+                to="/register/artisan"
+                className="secondary-btn mt-2 w-full btn flex items-center justify-center gap-2"
+              >
+                <GrUserWorker />
+                <span>Register as an Artisan</span>
+              </Link>
+            </div>
           </div>
-
         </div>
       </div>
     </section>

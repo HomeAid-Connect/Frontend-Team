@@ -1,17 +1,25 @@
-import { useState } from 'react'
 import LoginPage from './Components/LoginPage'
 import RegisterPage from './Components/RegisterPage'
-import Dashboard from './Components/Dashboard'
 import OtpScreen from './Components/OtpScreen'
+import LandingPage from './Components/LandingPage'
+import Dashboard from './Components/Dashboard'
+import {Routes, Route} from 'react-router'
 
 function App() {
 
   return (
     <>
-    {/* <LoginPage/> */}
-    {/* <RegisterPage role={"customer"}/> */}
-    {/* <Dashboard/> */}
-    <OtpScreen/>
+   
+
+<Routes>
+  <Route path='/' element={<LandingPage/>}/>
+  <Route path='/login' element={<LoginPage/>}/>
+  <Route path='/register/customer' element={<RegisterPage/>}/>
+  <Route path='/register/artisan' element={<RegisterPage/>}/>
+  <Route path='/dashboard' element={<Dashboard/>}/>
+  <Route path='/register/otp' element={<OtpScreen/>}/>
+</Routes>
+
     </>
   )
 }

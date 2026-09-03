@@ -6,7 +6,8 @@ import { MdSecurity } from "react-icons/md";
 import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiCalendar, BiHide, BiShow } from "react-icons/bi";
 import { FaUser, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
-import {ArtisanLists} from '../data/ArtisanLists'
+import { ArtisanLists } from "../data/ArtisanLists";
+import { Link } from "react-router";
 
 export default function RegisterPage({role}) {
   const states = [
@@ -22,7 +23,7 @@ export default function RegisterPage({role}) {
   ];
 
  
-  const [activeRole, setActiveRole] = useState({role});
+  const [activeRole, setActiveRole] = useState("customer");
   const isCustomer = (activeRole === "customer");
 
   const availableStatesJSX = states.map((state, index) => (
@@ -162,18 +163,6 @@ export default function RegisterPage({role}) {
                   </div>
                 </div>
 
-                <div className="sm:col-span-2">
-                  <label className="label" htmlFor="profileImage">
-                    Profile Picture
-                  </label>
-                  <input
-                    type="file"
-                    name="profileImage"
-                    id="profileImage"
-                    accept="image/*"
-                    className="mt-1 block w-full rounded-xl border-2 border-dashed border-purple-200 bg-white px-3 py-3 text-sm text-purple-800 file:mr-3 file:rounded-lg file:border-0 file:bg-purple-700 file:px-3 file:py-2 file:text-sm file:font-medium cursor-pointer file:text-white hover:file:bg-purple-900"
-                  />
-                </div>
 
                 <div className="sm:col-span-2">
                   <label className="label" htmlFor="password">
@@ -321,9 +310,9 @@ export default function RegisterPage({role}) {
 
             <div className="mt-6 text-center text-sm text-purple-800">
               Already have an account? {" "}
-              <a href="#" className="font-semibold text-purple-700 hover:underline">
+              <Link to="/login" className="font-semibold text-purple-700 hover:underline">
                 Log in
-              </a>
+              </Link>
             </div>
           </div>
         </div>
