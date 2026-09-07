@@ -5,10 +5,15 @@ import LandingPage from './Components/LandingPage'
 import Dashboard from './Components/Dashboard'
 import {Routes, Route} from 'react-router'
 
+// Add Zod for validation
+// use Action() to collect formData
+
 function App() {
 
   return (
     <>
+
+    
    
 
 <Routes>

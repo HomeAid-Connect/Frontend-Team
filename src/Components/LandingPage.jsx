@@ -170,7 +170,7 @@ export default function LandingPage() {
               Skilled hands, nearby
             </h2>
           </div>
-          <Link to="/register" className="flex items-center gap-1 text-xs font-bold text-purple-700">
+          <Link to="/register/artisan" className="flex items-center gap-1 text-xs font-bold text-purple-700">
             Get started <FaArrowRight aria-hidden="true" />
           </Link>
         </div>
@@ -211,7 +211,7 @@ export default function LandingPage() {
             homes, and peace of mind.
           </p>
           <Link
-            to="/register"
+            to="/register/customer"
             className="btn mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-bold text-purple-800 hover:bg-purple-100"
           >
             Create your account <FaArrowRight aria-hidden="true" />

@@ -26,8 +26,6 @@ export default function RegisterPage({ role }) {
   const isCustomer = activeRole === "customer";
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
-  const [locationInput, setLocationInput] = useState("");
-  const [workLocations, setWorkLocations] = useState(["Aba"])
 
   const availableStatesJSX = states.map((state, index) => (
     <option key={index} value={state}>
@@ -134,9 +132,10 @@ setWorkLocations(prev => {
               ))}
             </div>
 
-            <form className="space-y-4">
+            <form className="space-y-4 transition-all ease-in duration-300">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="sm:col-span-2">
+                <div className="w-full sm:col-span-2 flex gap-3 sm:flex-row flex-col">
+                  <div className="grow">
                   <label className="label" htmlFor="fullName">
                     Full Name
                   </label>
@@ -152,6 +151,28 @@ setWorkLocations(prev => {
                         isCustomer ? "e.g. Ada Johnson" : "e.g. Daniel Ikpe"
                       }
                     />
+                  </div>
+                </div>
+
+                <div className="">
+                    <label className="label" htmlFor="gender">
+                      Select Gender
+                    </label>
+                    <div className="input-field">
+                      <GrUserWorker className="text-purple-500" />
+                      <select
+                        name="gender"
+                        id="gender"
+                        defaultValue=""
+                        className="w-full bg-transparent focus:outline-none"
+                      >
+                        <option value="" disabled>
+                          Select Gender
+                        </option>
+                       <option value="male">Male</option>
+                       <option value="female">Female</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
 
@@ -309,27 +330,7 @@ setWorkLocations(prev => {
                     </div>
                   </div>
 
-                  <div className="sm:col-span-2">
-                    <label className="label" htmlFor="workLocations">
-                      Locations You Can Work (Multiple)
-                    </label>
-                    <div className="input-field px-0! py-0!">
-                    <input  
-                      type="text"
-                      value={locationInput}
-                      onChange={(e) => setLocationInput(e.target.value)}
-                      required
-                      className="w-full bg-transparent ml-4 focus:outline-none"
-                      placeholder="Click 'Add' to add each loaction"
-                    />
-                     <button className="btn primary-btn w-fit!" onClick={addLocation} type="button">Add</button>
-                  </div>
-                  <div className="mt-2 p-2 border-t border-b border-purple-200 min-h-4 flex items-center gap-2">
-                    {workLocations.map(i => <span className={"bg-purple-400 rounded-sm p-1 flex gap-1 text-white text-xs"}>
-                      {i} <button onClick={() => deleteLocation(i)}  type='button'><MdCancel/></button>
-                    </span>)}
-                  </div>
-                  </div>
+                 
                 </div>
               )}
 
