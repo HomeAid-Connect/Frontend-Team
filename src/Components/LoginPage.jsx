@@ -4,20 +4,56 @@ import artisans from "../assets/workers-login.png";
 import { MdAccountBalanceWallet, MdSecurity } from "react-icons/md";
 import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiHide, BiShow } from "react-icons/bi";
-import { Link } from "react-router";
-import {useState} from 'react'
+import { Link, useNavigate } from "react-router";
+import { useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
 export default function LoginPage() {
-
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
-  const [emailError, setEmailError] = useState({value: false, message: ""})
-  const [passwordError, setPasswordError] = useState({value: false, message: "Welcome back"})
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [formState, setFormState] = useState({
     loading: false,
     error: false,
     success: false,
-  })
+    message: ""
+  });
+  const navigate = useNavigate()
+
+  async function handleLogin(formData) {
+    const data = Object.fromEntries(formData);
+
+    setFormState((prev) => {
+      return { ...prev, loading: true };
+    });
+
+    try {
+      const response = await fetch("https://api.google.com/login", {
+        method: "POST",
+        headers: {},
+        body: JSON.stringify(data),
+      });
+      
+      if (!response.ok) {
+        throw new Error("An Error occured");
+      }
+      
+      const respData = await response.json()
+
+      setFormState((prev) => {
+        return { ...prev, loading: false, message: respData.message };
+      });
+
+      
+
+      navigate("/dashboard")
+
+    } catch(s) {
+      setFormState((prev) => {
+        return { ...prev, loading: false };
+      });
+      console.log(s)
+    }
+  }
+
   return (
     <section className="overflow-hidden relative font-manrope">
       <div className="flex justify-center  items-center sm:p-1 lg:p-8">
@@ -48,7 +84,7 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <form action="" className="mt-6 mb-2">
+            <form action={handleLogin} className="mt-6 mb-2">
               {/* form-control */}
               <div className="mb-4">
                 <label className="label" htmlFor="email">
@@ -65,9 +101,6 @@ export default function LoginPage() {
                     required
                   />
                 </div>
-               {emailError.value && <p className="text-red-600 mt-2 text-xs">
-                  {emailError.message}
-                </p>}
               </div>
 
               {/* form-control */}
@@ -85,11 +118,18 @@ export default function LoginPage() {
                     placeholder="Enter your password"
                     required
                   />
-                  {isPasswordVisible ? <BiHide onClick={() => setIsPasswordVisible(i => !i)} className="cursor-pointer"/> : <BiShow onClick={() => setIsPasswordVisible(i => !i)} className="cursor-pointer"/>}
+                  {isPasswordVisible ? (
+                    <BiHide
+                      onClick={() => setIsPasswordVisible((i) => !i)}
+                      className="cursor-pointer"
+                    />
+                  ) : (
+                    <BiShow
+                      onClick={() => setIsPasswordVisible((i) => !i)}
+                      className="cursor-pointer"
+                    />
+                  )}
                 </div>
-                {passwordError.value && <p className="text-red-600 mt-2 text-xs">
-                  {passwordError.message}
-                </p>}
               </div>
               <a
                 href="#"
@@ -98,19 +138,34 @@ export default function LoginPage() {
                 Forgot Password?
               </a>
 
-              <button type="submit" disabled={formState.loading} className="primary-btn btn disabled:bg-red-800/40 disabled:cursor-not-allowed">
-                
-                 {formState.loading ? <span className="flex items-center justify-center gap-2">< ImSpinner2 className="animate-spin w-4 h-4"/>
-                <span> Logging in </span></span> : <span>Log in</span>}
+              <button
+                type="submit"
+                disabled={formState.loading}
+                className="primary-btn btn disabled:bg-red-800/40 disabled:cursor-not-allowed"
+              >
+                {formState.loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <ImSpinner2 className="animate-spin w-4 h-4" />
+                    <span> Logging in </span>
+                  </span>
+                ) : (
+                  <span>Log in</span>
+                )}
               </button>
             </form>
             {/* This shows the error state of the form */}
-            
-            {formState.success | formState.error ? <div className={`${formState.success && 'bg-green-100/80 border-green-800/20'} ${formState.error && 'bg-red-100 border-red-800/20'} rounded-md p-1.5 border`}>
 
-           
-              <p className={`text-sm ${formState.success && 'text-green-700'} ${formState.error && 'text-red-500'}`}>{formState.success ? "Welcome back" : "Try Again"}</p>
-            </div>: null}
+            {formState.success | formState.error ? (
+              <div
+                className={`${formState.success && "bg-green-100/80 border-green-800/20"} ${formState.error && "bg-red-100 border-red-800/20"} rounded-md p-1.5 border`}
+              >
+                <p
+                  className={`text-sm ${formState.success && "text-green-700"} ${formState.error && "text-red-500"}`}
+                >
+                  {formState.success ? "Welcome back" : "Try Again"}
+                </p>
+              </div>
+            ) : null}
 
             <div className="flex gap-3  mt-8 items-center">
               <span className="h-px bg-purple-300 w-full"></span>
