@@ -17,14 +17,16 @@ function App() {
 
         <Route path="register">
           <Route path="customer" element={<RegisterPage role={"customer"} />} />
+          <Route path="*" element={<RegisterPage role={"customer"} />} />
           <Route path="artisan" element={<RegisterPage role={"artisan"} />} />
+        <Route path="otp" element={<OtpScreen />} />
+
         </Route>
 
         <Route element={""}>
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
         </Route>
 
-        <Route path="/register/otp" element={<OtpScreen />} />
       </Routes>
     </>
   );

@@ -14,43 +14,56 @@ export default function LoginPage() {
     loading: false,
     error: false,
     success: false,
-    message: ""
+    message: "",
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  async function handleLogin(formData) {
-    const data = Object.fromEntries(formData);
+  async function handleLogin(event) {
+    event.preventDefault();
 
-    setFormState((prev) => {
-      return { ...prev, loading: true };
+    setFormState({
+      loading: true,
+      error: false,
+      success: false,
+      message: "",
     });
 
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+
     try {
-      const response = await fetch("https://api.google.com/login", {
-        method: "POST",
-        headers: {},
-        body: JSON.stringify(data),
-      });
-      
+      const response = await fetch(
+        "https://home-aid-connect.onrender.com/api/auth/lojgin/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        },
+      );
+      const responseData = await response.json();
+
+      console.log(response)
+
       if (!response.ok) {
-        throw new Error("An Error occured");
+        throw new Error(responseData.message || "Error with Login");
       }
-      
-      const respData = await response.json()
 
-      setFormState((prev) => {
-        return { ...prev, loading: false, message: respData.message };
+      setFormState({
+        loading: false,
+        error: false,
+        success: true,
+        message: responseData.message || "Welcome back",
       });
 
-      
-
-      navigate("/dashboard")
-
-    } catch(s) {
-      setFormState((prev) => {
-        return { ...prev, loading: false };
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
+    } catch (error) {
+      setFormState({
+        loading: false,
+        error: true,
+        success: false,
+        message: error instanceof Error ? error.message : "Unable to log in, Check your network",
       });
-      console.log(s)
     }
   }
 
@@ -84,11 +97,11 @@ export default function LoginPage() {
               </p>
             </div>
 
-            <form action={handleLogin} className="mt-6 mb-2">
+            <form onSubmit={handleLogin} className="mt-6 mb-2">
               {/* form-control */}
               <div className="mb-4">
                 <label className="label" htmlFor="email">
-                  Email Address
+                 Username or E-mail
                 </label>
                 <div className="input-field">
                   <GrMailOption />
@@ -155,14 +168,14 @@ export default function LoginPage() {
             </form>
             {/* This shows the error state of the form */}
 
-            {formState.success | formState.error ? (
+            {formState.success || formState.error ? (
               <div
-                className={`${formState.success && "bg-green-100/80 border-green-800/20"} ${formState.error && "bg-red-100 border-red-800/20"} rounded-md p-1.5 border`}
+                className={`${formState.success ? "bg-green-100/80 border-green-800/20" : "bg-red-100 border-red-800/20"} rounded-md p-1.5 border`}
               >
                 <p
-                  className={`text-sm ${formState.success && "text-green-700"} ${formState.error && "text-red-500"}`}
+                  className={`text-sm ${formState.success ? "text-green-700" : "text-red-500"}`}
                 >
-                  {formState.success ? "Welcome back" : "Try Again"}
+                  {formState.message}
                 </p>
               </div>
             ) : null}

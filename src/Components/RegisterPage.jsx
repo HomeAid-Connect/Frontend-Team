@@ -25,7 +25,8 @@ export default function RegisterPage({ role }) {
   const [activeRole, setActiveRole] = useState(role);
   const isCustomer = activeRole === "customer";
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
 
   const availableStatesJSX = states.map((state, index) => (
     <option key={index} value={state}>
@@ -33,32 +34,19 @@ export default function RegisterPage({ role }) {
     </option>
   ));
 
-  function addLocation() {
-setWorkLocations(prev => {
-  if(prev.some(i => i.toLowerCase() === locationInput.toLowerCase())) {
-    setLocationInput("")
-    alert("Location already exists")
-    return prev
-  }
-  if(locationInput.length < 2) {
-    setLocationInput("")
-    alert("Enter a valid location")
-    return prev 
-  }
-  else {
-    setLocationInput("")
-    const formattedLocation = locationInput
-      .trim()
-      .toLowerCase()
-      .replace(/\b\w/g, (char) => char.toUpperCase())
-    return [...prev, formattedLocation]
-  }
-})
-  }
+  async function handleRegister(formData) {
+    // collect the form data
+    const formInputs = Object.fromEntries(formData);
+    // validate field
 
-  function deleteLocation(i) {
-    setWorkLocations(prev => prev.filter(prevv => prevv !== i))
-    console.log(workLocations)
+    // send post request to backend
+    const response = await fetch()
+
+    // if error, handle the error
+    // if success, display success
+    // Navigate to OTP screen
+    
+  
   }
 
   return (
@@ -132,29 +120,66 @@ setWorkLocations(prev => {
               ))}
             </div>
 
-            <form className="space-y-4 transition-all ease-in duration-300">
+            <form
+              action={handleRegister}
+              className="space-y-4 transition-all ease-in duration-300"
+            >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="w-full sm:col-span-2 flex gap-3 sm:flex-row flex-col">
-                  <div className="grow">
-                  <label className="label" htmlFor="fullName">
-                    Full Name
-                  </label>
-                  <div className="input-field">
-                    <FaUser className="text-purple-500" />
-                    <input
-                      type="text"
-                      name="fullName"
-                      id="fullName"
-                      required
-                      className="w-full bg-transparent focus:outline-none"
-                      placeholder={
-                        isCustomer ? "e.g. Ada Johnson" : "e.g. Daniel Ikpe"
-                      }
-                    />
+                <div className="sm:col-span-2 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className="label" htmlFor="firstName">
+                      First Name
+                    </label>
+                    <div className="input-field">
+                      <FaUser className="text-purple-500" />
+                      <input
+                        type="text"
+                        name="firstName"
+                        id="firstName"
+                        required
+                        className="w-full bg-transparent focus:outline-none"
+                        placeholder="Enter your first name"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="label" htmlFor="lastName">
+                      Last Name
+                    </label>
+                    <div className="input-field">
+                      <FaUser className="text-purple-500" />
+                      <input
+                        type="text"
+                        name="lastName"
+                        id="lastName"
+                        required
+                        className="w-full bg-transparent focus:outline-none"
+                        placeholder="Enter your last name"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                <div className="">
+                <div className="w-full sm:col-span-2 flex gap-3 sm:flex-row flex-col">
+                  <div className="grow">
+                    <label className="label" htmlFor="fullName">
+                      Username
+                    </label>
+                    <div className="input-field">
+                      <FaUser className="text-purple-500" />
+                      <input
+                        type="text"
+                        name="fullName"
+                        id="fullName"
+                        required
+                        className="w-full bg-transparent focus:outline-none"
+                        placeholder="Enter a unique username"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="">
                     <label className="label" htmlFor="gender">
                       Select Gender
                     </label>
@@ -163,18 +188,21 @@ setWorkLocations(prev => {
                       <select
                         name="gender"
                         id="gender"
+                        required
                         defaultValue=""
                         className="w-full bg-transparent focus:outline-none"
                       >
                         <option value="" disabled>
                           Select Gender
                         </option>
-                       <option value="male">Male</option>
-                       <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
                       </select>
                     </div>
                   </div>
                 </div>
+
+                
 
                 <div>
                   <label className="label" htmlFor="phone">
@@ -188,7 +216,7 @@ setWorkLocations(prev => {
                       id="phone"
                       required
                       className="w-full bg-transparent focus:outline-none"
-                      placeholder="e.g. +234 800 000 0000"
+                      placeholder="+234 800 000 0000"
                     />
                   </div>
                 </div>
@@ -202,7 +230,6 @@ setWorkLocations(prev => {
                     <select
                       name="state"
                       id="state"
-                      required
                       defaultValue=""
                       className="w-full bg-transparent focus:outline-none"
                     >
@@ -244,12 +271,22 @@ setWorkLocations(prev => {
                       className="w-full bg-transparent focus:outline-none"
                       placeholder="Create a strong password"
                     />
-                    {isPasswordVisible ? <BiHide onClick={() => setIsPasswordVisible(i => !i)} className="cursor-pointer"/> : <BiShow onClick={() => setIsPasswordVisible(i => !i)} className="cursor-pointer"/>}
+                    {isPasswordVisible ? (
+                      <BiHide
+                        onClick={() => setIsPasswordVisible((i) => !i)}
+                        className="cursor-pointer"
+                      />
+                    ) : (
+                      <BiShow
+                        onClick={() => setIsPasswordVisible((i) => !i)}
+                        className="cursor-pointer"
+                      />
+                    )}
                   </div>
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="label" htmlFor="password">
+                  <label className="label" htmlFor="confirm-password">
                     Confirm Password
                   </label>
                   <div className="input-field">
@@ -257,27 +294,37 @@ setWorkLocations(prev => {
                     <input
                       type={isConfirmPasswordVisible ? "text" : "password"}
                       name="confirm-password"
-                      id="password"
+                      id="confirm-password"
                       required
                       className="w-full bg-transparent focus:outline-none"
                       placeholder="Create a strong password"
                     />
-                     {isConfirmPasswordVisible ? <BiHide onClick={() => setIsConfirmPasswordVisible(i => !i)} className="cursor-pointer"/> : <BiShow onClick={() => setIsConfirmPasswordVisible(i => !i)} className="cursor-pointer"/>}
+                    {isConfirmPasswordVisible ? (
+                      <BiHide
+                        onClick={() => setIsConfirmPasswordVisible((i) => !i)}
+                        className="cursor-pointer"
+                      />
+                    ) : (
+                      <BiShow
+                        onClick={() => setIsConfirmPasswordVisible((i) => !i)}
+                        className="cursor-pointer"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
 
               {isCustomer ? (
                 <div>
-                  <label className="label" htmlFor="address">
-                    Address
+                  <label className="label" htmlFor="location">
+                    Location
                   </label>
                   <textarea
-                    id="address"
-                    name="address"
+                    id="location"
+                    name="location"
                     rows="3"
                     className="mt-1 w-full rounded-xl border-2 border-purple-200 bg-white px-4 py-3 text-purple-800 placeholder:text-purple-400 focus:border-purple-400 focus:outline-none"
-                    placeholder="Enter your delivery or home address"
+                    placeholder="Enter your home address"
                   />
                 </div>
               ) : (
@@ -329,8 +376,6 @@ setWorkLocations(prev => {
                       </select>
                     </div>
                   </div>
-
-                 
                 </div>
               )}
 
