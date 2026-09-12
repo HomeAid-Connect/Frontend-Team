@@ -36,12 +36,20 @@ export default function LandingPage() {
               alt="HomeAid Connect"
               className="h-18 w-18 rounded-2xl object-cover"
             />
-            <Link
+            <div>
+              <Link
               to="/login"
               className="rounded-full border border-white/40 px-4 py-2 text-xs font-bold transition hover:bg-white hover:text-purple-900"
             >
               Log in
             </Link>
+            <Link
+              to="dashboard"
+              className="rounded-full border border-white/40 px-4 py-2 text-xs font-bold transition hover:bg-white hover:text-purple-900"
+            >
+             Dashboard
+            </Link>
+            </div>
           </nav>
 
           <div className="grid items-center gap-8 pt-10 md:grid-cols-2 md:gap-12 md:pt-16">
