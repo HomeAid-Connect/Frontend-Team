@@ -26,3 +26,41 @@
 .label {
     @apply text-sm font-semibold text-purple-900 mt-2;
 }
+
+.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.service-track {
+    display: flex;
+    width: max-content;
+    gap: 1rem;
+    animation: services-scroll 32s linear infinite;
+}
+
+.service-track.is-paused,
+.service-carousel:hover .service-track,
+.service-carousel:focus-within .service-track {
+    animation-play-state: paused;
+}
+
+@keyframes services-scroll {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(calc(-50% - 0.5rem));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .service-track {
+        animation: none;
+    }
+}
