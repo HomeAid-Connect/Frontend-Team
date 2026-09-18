@@ -7,7 +7,28 @@ import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiCalendar, BiHide, BiShow } from "react-icons/bi";
 import { FaUser, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
 import { ArtisanLists } from "../data/ArtisanLists";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { ImSpinner2 } from "react-icons/im";
+import { z } from "zod";
+
+const registrationSchema = z
+  .object({
+    username: z.string().trim().min(3, "Username must be at least 3 characters"),
+    email: z.string().trim().email("Enter a valid email address"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    password_confirm: z.string().min(1, "Confirm your password"),
+    first_name: z.string().trim().min(1, "First name is required"),
+    last_name: z.string().trim().min(1, "Last name is required"),
+    phone_number: z.string().trim().min(7, "Enter a valid phone number"),
+    role: z.enum(["CUSTOMER", "ARTISAN"]),
+    gender: z.enum(["MALE", "FEMALE"]),
+    location: z.string().trim().min(1, "Location is required"),
+    date_of_birth: z.string().min(1, "Date of birth is required"),
+  })
+  .refine((data) => data.password === data.password_confirm, {
+    path: ["password_confirm"],
+    message: "Passwords do not match",
+  });
 
 export default function RegisterPage({ role }) {
   const states = [
@@ -24,9 +45,17 @@ export default function RegisterPage({ role }) {
 
   const [activeRole, setActiveRole] = useState(role);
   const isCustomer = activeRole === "customer";
+
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
+  const [formState, setFormState] = useState({
+    loading: false,
+    error: false,
+    success: false,
+    message: "",
+  });
+  const navigate = useNavigate();
 
   const availableStatesJSX = states.map((state, index) => (
     <option key={index} value={state}>
@@ -34,19 +63,109 @@ export default function RegisterPage({ role }) {
     </option>
   ));
 
-  async function handleRegister(formData) {
-    // collect the form data
-    const formInputs = Object.fromEntries(formData);
-    // validate field
+  function formatApiError(errorData) {
+    if (typeof errorData === "string") return errorData;
+    if (errorData?.message) return errorData.message;
 
-    // send post request to backend
-    const response = await fetch()
+    if (errorData && typeof errorData === "object") {
+      return Object.entries(errorData)
+        .map(([field, messages]) => {
+          const formattedMessages = Array.isArray(messages)
+            ? messages.join(", ")
+            : String(messages);
+          return `${field.replaceAll("_", " ")}: ${formattedMessages}`;
+        })
+        .join(" | ");
+    }
 
-    // if error, handle the error
-    // if success, display success
-    // Navigate to OTP screen
-    
-  
+    return "Unable to create your account";
+  }
+
+  async function handleRegister(event) {
+    event.preventDefault();
+    setFormState({
+      loading: true,
+      error: false,
+      success: false,
+      message: "",
+    });
+
+    const formInputs = Object.fromEntries(new FormData(event.currentTarget));
+    const payload = {
+      username: formInputs.username,
+      email: formInputs.email,
+      password: formInputs.password,
+      password_confirm: formInputs.password_confirm,
+      first_name: formInputs.first_name,
+      last_name: formInputs.last_name,
+      phone_number: formInputs.phone_number,
+      role: isCustomer ? "CUSTOMER" : "ARTISAN",
+      gender: formInputs.gender,
+      location: formInputs.location || formInputs.state,
+      date_of_birth: formInputs.date_of_birth,
+    };
+
+    const validation = registrationSchema.safeParse(payload);
+    if (!validation.success) {
+      const message = Object.values(validation.error.flatten().fieldErrors)
+        .flat()
+        .join(" ");
+      setFormState({
+        loading: false,
+        error: true,
+        success: false,
+        message,
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/auth/register/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(validation.data),
+        },
+      );
+      const responseText = await response.text();
+      let responseData = {};
+
+      if (responseText) {
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          if (!response.ok) {
+            throw new Error("The server returned an invalid response");
+          }
+        }
+      }
+
+      if (!response.ok) {
+        throw new Error(formatApiError(responseData));
+      }
+
+      setFormState({
+        loading: false,
+        error: false,
+        success: true,
+        message: responseData.message || "Account created successfully",
+      });
+
+      localStorage.setItem("email", validation.data.email)
+
+      setTimeout(() => navigate("/register/otp"), 2000);
+    } catch (error) {
+      setFormState({
+        loading: false,
+        error: true,
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to create your account. Check your network.",
+      });
+    }
   }
 
   return (
@@ -121,7 +240,7 @@ export default function RegisterPage({ role }) {
             </div>
 
             <form
-              action={handleRegister}
+              onSubmit={handleRegister}
               className="space-y-4 transition-all ease-in duration-300"
             >
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -134,7 +253,7 @@ export default function RegisterPage({ role }) {
                       <FaUser className="text-purple-500" />
                       <input
                         type="text"
-                        name="firstName"
+                        name="first_name"
                         id="firstName"
                         required
                         className="w-full bg-transparent focus:outline-none"
@@ -151,7 +270,7 @@ export default function RegisterPage({ role }) {
                       <FaUser className="text-purple-500" />
                       <input
                         type="text"
-                        name="lastName"
+                        name="last_name"
                         id="lastName"
                         required
                         className="w-full bg-transparent focus:outline-none"
@@ -163,15 +282,15 @@ export default function RegisterPage({ role }) {
 
                 <div className="w-full sm:col-span-2 flex gap-3 sm:flex-row flex-col">
                   <div className="grow">
-                    <label className="label" htmlFor="fullName">
+                    <label className="label" htmlFor="username">
                       Username
                     </label>
                     <div className="input-field">
                       <FaUser className="text-purple-500" />
                       <input
                         type="text"
-                        name="fullName"
-                        id="fullName"
+                        name="username"
+                        id="username"
                         required
                         className="w-full bg-transparent focus:outline-none"
                         placeholder="Enter a unique username"
@@ -188,15 +307,14 @@ export default function RegisterPage({ role }) {
                       <select
                         name="gender"
                         id="gender"
-                        required
                         defaultValue=""
                         className="w-full bg-transparent focus:outline-none"
                       >
                         <option value="" disabled>
                           Select Gender
                         </option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
                       </select>
                     </div>
                   </div>
@@ -212,8 +330,8 @@ export default function RegisterPage({ role }) {
                     <FaPhoneAlt className="text-purple-500" />
                     <input
                       type="tel"
-                      name="phone"
-                      id="phone"
+                      name="phone_number"
+                        id="phone_number"
                       required
                       className="w-full bg-transparent focus:outline-none"
                       placeholder="+234 800 000 0000"
@@ -230,6 +348,7 @@ export default function RegisterPage({ role }) {
                     <select
                       name="state"
                       id="state"
+                      required
                       defaultValue=""
                       className="w-full bg-transparent focus:outline-none"
                     >
@@ -253,6 +372,22 @@ export default function RegisterPage({ role }) {
                       id="email"
                       className="w-full bg-transparent focus:outline-none"
                       placeholder="Enter your email"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="label" htmlFor="date_of_birth">
+                    Date of Birth
+                  </label>
+                  <div className="input-field">
+                    <BiCalendar className="text-purple-500" />
+                    <input
+                      type="date"
+                      name="date_of_birth"
+                      id="date_of_birth"
+                      required
+                      className="w-full bg-transparent focus:outline-none"
                     />
                   </div>
                 </div>
@@ -293,7 +428,7 @@ export default function RegisterPage({ role }) {
                     <MdSecurity className="text-purple-500" />
                     <input
                       type={isConfirmPasswordVisible ? "text" : "password"}
-                      name="confirm-password"
+                      name="password_confirm"
                       id="confirm-password"
                       required
                       className="w-full bg-transparent focus:outline-none"
@@ -379,10 +514,34 @@ export default function RegisterPage({ role }) {
                 </div>
               )}
 
-              <button type="submit" className="primary-btn btn mt-2">
-                {isCustomer
-                  ? "Create Customer Account"
-                  : "Create Artisan Account"}
+              {formState.message && (
+                <div
+                  role="alert"
+                  className={`rounded-md border p-3 text-sm ${
+                    formState.success
+                      ? "border-green-200 bg-green-100 text-green-700"
+                      : "border-red-200 bg-red-100 text-red-600"
+                  }`}
+                >
+                  {formState.message}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={formState.loading}
+                className="primary-btn btn mt-2 disabled:cursor-not-allowed"
+              >
+                {formState.loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <ImSpinner2 className="h-4 w-4 animate-spin" />
+                    Creating account...
+                  </span>
+                ) : isCustomer ? (
+                  "Create Customer Account"
+                ) : (
+                  "Create Artisan Account"
+                )}
               </button>
             </form>
 

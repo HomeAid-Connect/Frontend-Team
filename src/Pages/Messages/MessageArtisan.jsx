@@ -4,10 +4,12 @@ import {
   FaceSmileIcon,
   PaperAirplaneIcon,
   PhoneIcon,
+  PhotoIcon,
   PlusIcon,
   StarIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ArtisansDetails } from "../../data/ArtisansDetails";
 
@@ -17,6 +19,9 @@ export default function MessageArtisan() {
     ArtisansDetails.find((item) => String(item.id) === artisanId) ||
     ArtisansDetails[0];
   const [message, setMessage] = useState("");
+  const [isAttachmentOpen, setIsAttachmentOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+  const imageInputRef = useRef(null);
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -32,16 +37,37 @@ export default function MessageArtisan() {
     },
   ]);
 
+  useEffect(() => {
+    return () => {
+      if (selectedImage) URL.revokeObjectURL(selectedImage);
+    };
+  }, [selectedImage]);
+
+  function handleImageChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      return;
+    }
+
+    setSelectedImage(URL.createObjectURL(file));
+    setIsAttachmentOpen(false);
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     const trimmedMessage = message.trim();
-    if (!trimmedMessage) return;
+    if (!trimmedMessage && !selectedImage) return;
 
     setMessages((currentMessages) => [
       ...currentMessages,
       {
         id: Date.now(),
         text: trimmedMessage,
+        image: selectedImage,
         time: new Date().toLocaleTimeString([], {
           hour: "numeric",
           minute: "2-digit",
@@ -50,6 +76,7 @@ export default function MessageArtisan() {
       },
     ]);
     setMessage("");
+    setSelectedImage("");
   }
 
   return (
@@ -129,6 +156,13 @@ export default function MessageArtisan() {
                     : "rounded-bl-sm border border-slate-100 bg-white text-slate-700"
                 }`}
               >
+                {chatMessage.image && (
+                  <img
+                    src={chatMessage.image}
+                    alt="Attached"
+                    className="mb-2 max-h-56 max-w-full rounded-lg object-cover"
+                  />
+                )}
                 <p className="whitespace-pre-line">{chatMessage.text}</p>
                 <p
                   className={`mt-1 text-[10px] ${
@@ -145,6 +179,23 @@ export default function MessageArtisan() {
         </div>
       </div>
 
+      {selectedImage && (
+        <div className="flex items-center gap-3 border-x border-t border-slate-200 bg-white px-3 pt-3">
+          <img
+            src={selectedImage}
+            alt="Selected attachment preview"
+            className="h-16 w-16 rounded-lg object-cover"
+          />
+          <button
+            type="button"
+            onClick={() => setSelectedImage("")}
+            className="rounded-full p-1 text-slate-500 hover:bg-purple-50 hover:text-purple-700"
+            aria-label="Remove selected image"
+          >
+            <XMarkIcon className="h-5 w-5" />
+          </button>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit}
         className="flex items-center gap-2 rounded-3xl border border-slate-200 bg-white p-2 shadow-[0_4px_20px_rgba(15,23,42,0.12)]"
@@ -152,10 +203,19 @@ export default function MessageArtisan() {
         <button
           type="button"
           aria-label="Add attachment"
+          onClick={() => setIsAttachmentOpen(true)}
           className="rounded-full bg-purple-700 p-2 text-white hover:bg-purple-900"
         >
           <PlusIcon className="h-6 w-6" />
         </button>
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          className="hidden"
+          aria-label="Choose an image"
+        />
         <input
           type="text"
           value={message}
@@ -172,6 +232,62 @@ export default function MessageArtisan() {
           <PaperAirplaneIcon className="h-5 w-5" />
         </button>
       </form>
+
+      {isAttachmentOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/40 sm:items-center sm:px-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="attachment-title"
+          onClick={() => setIsAttachmentOpen(false)}
+        >
+          <div
+            className="w-full rounded-t-3xl bg-white p-5 shadow-xl sm:max-w-md sm:rounded-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between">
+              <h2 id="attachment-title" className="text-lg font-bold text-purple-950">
+                Add to message
+              </h2>
+              <button
+                type="button"
+                aria-label="Close attachment menu"
+                onClick={() => setIsAttachmentOpen(false)}
+                className="rounded-full p-1 text-slate-500 hover:bg-purple-50 hover:text-purple-700"
+              >
+                <XMarkIcon className="h-5 w-5" />
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => imageInputRef.current?.click()}
+              className="flex w-full items-center gap-3 border-b border-slate-100 py-3 text-left hover:bg-purple-50"
+            >
+              <span className="rounded-xl bg-purple-100 p-3 text-purple-700">
+                <PhotoIcon className="h-6 w-6" />
+              </span>
+              <span className="flex-1">
+                <span className="block text-sm font-bold text-slate-800">
+                  Photo
+                </span>
+                <span className="block text-xs text-slate-500">
+                  Choose an image from your gallery
+                </span>
+              </span>
+              <span className="text-xl text-slate-400">›</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsAttachmentOpen(false)}
+              className="mt-4 w-full rounded-xl border-2 border-purple-600 px-4 py-3 text-sm font-bold text-purple-700 hover:bg-purple-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

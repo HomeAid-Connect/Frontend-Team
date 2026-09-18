@@ -57,6 +57,7 @@ export default function OtpScreen() {
 
     setError("");
     // Submit the complete OTP here.
+    
   }
 
   return (

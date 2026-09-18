@@ -17,7 +17,7 @@ export default function Dashboard() {
   const profileName = "Nehemiah";
   const profileInitial = profileName.charAt(0).toUpperCase();
 
-  let Notifications = [1, "bola"];
+  let Notifications = [1, "bola", 6, 78];
   const timeOfDay = (() => {
     const currentHour = new Date().getHours();
     if (currentHour < 12) return "Morning";
@@ -74,7 +74,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="flex text-[14px] flex-1 items-center justify-between gap-2 mt-6 bg-white rounded-md p-2 text-purple-700 max-w-148">
+        <div className="relative flex text-[14px] flex-1 items-center justify-between gap-2 mt-6 bg-white rounded-md p-2 text-purple-700 max-w-148">
           <BiSearchAlt />
           <input
             type="text"
@@ -87,6 +87,8 @@ export default function Dashboard() {
           <button className="p-1 shadow-sm cursor-pointer rounded-full hover:bg-purple-50">
             <BsFilterRight />
           </button>
+
+          <div className="absolute -bottom-[] -right-[0] w-6 h-40 bg-amber-200"></div>
         </div>
       </div>
 

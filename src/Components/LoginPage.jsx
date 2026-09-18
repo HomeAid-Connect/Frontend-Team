@@ -32,20 +32,21 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(
-        "https://home-aid-connect.onrender.com/api/auth/lojgin/",
+        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/auth/register/api/auth/login/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
         },
       );
-      const responseData = await response.json();
 
       console.log(response)
-
+            
       if (!response.ok) {
-        throw new Error(responseData.message || "Error with Login");
+        throw new Error(response.statusText || "Error with Login");
       }
+      
+      const responseData = await response.json();
 
       setFormState({
         loading: false,
