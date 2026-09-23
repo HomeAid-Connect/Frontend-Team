@@ -13,7 +13,8 @@ import { ArtisansDetails } from "../data/ArtisansDetails.js";
 export default function Dashboard() {
   const search = useRef();
   const [isServicesPaused, setIsServicesPaused] = useState(false);
-  const profileImage = localStorage.getItem("homeaid-profile-image");
+  // const profileImage = localStorage.getItem("homeaid-profile-image");
+  const profileImage = null;
   const profileName = "Nehemiah";
   const profileInitial = profileName.charAt(0).toUpperCase();
 
@@ -88,7 +89,8 @@ export default function Dashboard() {
             <BsFilterRight />
           </button>
 
-          <div className="absolute -bottom-[] -right-[0] w-6 h-40 bg-amber-200"></div>
+          {/* search bar comes on focus */}
+          {/* <div className="absolute -bottom-[] -right-[0] w-6 h-40 bg-amber-200"></div> */}
         </div>
       </div>
 
@@ -96,7 +98,10 @@ export default function Dashboard() {
       <div className="mt-8">
         <div className="flex  justify-between">
           <h3 className="text-purple-900 font-bold">Popular Services</h3>
-          <Link to="../services" className="group text-purple-800 flex items-center gap-1 mr-2 whitespace-nowrap">
+          <Link
+            to="../services"
+            className="group text-purple-800 flex items-center gap-1 mr-2 whitespace-nowrap"
+          >
             <span className="text-[10px] font-bold group-hover:text-purple-700">
               See all
             </span>
@@ -111,7 +116,9 @@ export default function Dashboard() {
           onTouchStart={() => setIsServicesPaused(true)}
           onTouchEnd={() => setIsServicesPaused(false)}
         >
-          <div className={`service-track ${isServicesPaused ? "is-paused" : ""}`}>
+          <div
+            className={`service-track ${isServicesPaused ? "is-paused" : ""}`}
+          >
             {[0, 1].map((groupIndex) => (
               <div
                 key={groupIndex}
@@ -200,6 +207,10 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+
+        
+
+
       </div>
     </>
   );

@@ -40,7 +40,7 @@ export default function ServicesPage() {
         
       </header>
 
-      <div className="mx-auto mt-8 flex max-w-2xl items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-[0_4px_12px_rgba(15,23,42,0.1)]">
+      <div className="mx-auto mt-8 flex max-w-2xl items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 ">
         <MagnifyingGlassIcon className="h-6 w-6 shrink-0 text-purple-700" />
         <input
           type="search"
@@ -50,13 +50,6 @@ export default function ServicesPage() {
           aria-label="Search for a service"
           className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400 sm:text-base"
         />
-        <button
-          type="button"
-          aria-label="Filter services"
-          className="rounded-full p-1 text-purple-700 transition-colors hover:bg-purple-100"
-        >
-          <AdjustmentsHorizontalIcon className="h-6 w-6" />
-        </button>
       </div>
 
       <section className="mt-8">
@@ -71,7 +64,7 @@ export default function ServicesPage() {
                 <Link
                   key={service.id}
                   to={`/Services/${service.title.toLowerCase().replaceAll(" ", "-")}`}
-                  className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 text-center shadow-[0_6px_12px_rgba(15,23,42,0.12)] transition-all hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(15,23,42,0.16)]"
+                  className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 text-center transition-all hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(15,23,42,0.16)]"
                 >
                   <span className="rounded-2xl bg-purple-100 p-4 text-purple-700">
                     <Icon className="h-7 w-7" />

@@ -13,7 +13,10 @@ import { z } from "zod";
 
 const registrationSchema = z
   .object({
-    username: z.string().trim().min(3, "Username must be at least 3 characters"),
+    username: z
+      .string()
+      .trim()
+      .min(3, "Username must be at least 3 characters"),
     email: z.string().trim().email("Enter a valid email address"),
     password: z.string().min(8, "Password must be at least 8 characters"),
     password_confirm: z.string().min(1, "Confirm your password"),
@@ -121,7 +124,7 @@ export default function RegisterPage({ role }) {
 
     try {
       const response = await fetch(
-        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/auth/register/",
+        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/v1/auth/register/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -130,7 +133,8 @@ export default function RegisterPage({ role }) {
       );
       const responseText = await response.text();
       let responseData = {};
-
+      console.log(response);
+      console.log(responseText);
       if (responseText) {
         try {
           responseData = JSON.parse(responseText);
@@ -152,7 +156,7 @@ export default function RegisterPage({ role }) {
         message: responseData.message || "Account created successfully",
       });
 
-      localStorage.setItem("email", validation.data.email)
+      sessionStorage.setItem("verification_email", validation.data.email);
 
       setTimeout(() => navigate("/register/otp"), 2000);
     } catch (error) {
@@ -320,8 +324,6 @@ export default function RegisterPage({ role }) {
                   </div>
                 </div>
 
-                
-
                 <div>
                   <label className="label" htmlFor="phone">
                     Phone Number
@@ -331,7 +333,7 @@ export default function RegisterPage({ role }) {
                     <input
                       type="tel"
                       name="phone_number"
-                        id="phone_number"
+                      id="phone_number"
                       required
                       className="w-full bg-transparent focus:outline-none"
                       placeholder="+234 800 000 0000"

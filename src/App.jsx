@@ -13,6 +13,7 @@ import SettingsPage from "./Pages/SettingsPage";
 import ProfilePage from "./Pages/ProfilePage"
 
 import { Routes, Route } from "react-router";
+import Professionals from "./Pages/Professionals/Professionals";
 
 // Add Zod for validation
 // use Action() to collect formData
@@ -37,6 +38,8 @@ function App() {
           <Route path="Bookings" element={<BookingsPage />} />
           <Route path="SOS" element={<SOSPage />} />
 
+          <Route path="Professionals" element={<Professionals/>}/>
+          
           <Route path="Messages">
           <Route index element={<MessagesPage />} />
             <Route path="artisan/:artisanId" element={<MessageArtisan/>} />
@@ -46,6 +49,7 @@ function App() {
             <Route index element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage/>} />
           </Route>
+
         </Route>
       </Routes>
     </>

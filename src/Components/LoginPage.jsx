@@ -32,7 +32,7 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(
-        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/auth/register/api/auth/login/",
+        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/v1/auth/login/",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -40,14 +40,15 @@ export default function LoginPage() {
         },
       );
 
-      console.log(response)
-            
       if (!response.ok) {
-        throw new Error(response.statusText || "Error with Login");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || errorData.detail || "Error with Login",
+        );
       }
-      
-      const responseData = await response.json();
 
+      const responseData = await response.json();
+      console.log(responseData);
       setFormState({
         loading: false,
         error: false,
@@ -56,14 +57,17 @@ export default function LoginPage() {
       });
 
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true });
       }, 1000);
     } catch (error) {
       setFormState({
         loading: false,
         error: true,
         success: false,
-        message: error instanceof Error ? error.message : "Unable to log in, Check your network",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unable to log in, Check your network",
       });
     }
   }
@@ -102,7 +106,7 @@ export default function LoginPage() {
               {/* form-control */}
               <div className="mb-4">
                 <label className="label" htmlFor="email">
-                 Username or E-mail
+                  Username or E-mail
                 </label>
                 <div className="input-field">
                   <GrMailOption />

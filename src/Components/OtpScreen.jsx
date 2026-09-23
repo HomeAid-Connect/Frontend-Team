@@ -1,12 +1,17 @@
 import { ShieldCheckIcon } from "@heroicons/react/16/solid";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 
 export default function OtpScreen() {
   const [timer, setTimer] = useState(59);
-  const [activeTab, setActiveTab] = useState("phone");
+  const [activeTab, setActiveTab] = useState("email");
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [error, setError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [verificationEmail, setVerificationEmail] = useState("");
   const inputRefs = useRef([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (timer === 0) return undefined;
@@ -19,15 +24,60 @@ export default function OtpScreen() {
   }, [timer]);
 
   useEffect(() => {
+    setVerificationEmail(sessionStorage.getItem("verification_email") || "");
     inputRefs.current[0]?.focus();
   }, []);
 
-  const handleResend = () => {
-    // Trigger the resend OTP request here before restarting the countdown.
+  const handleResend = async () => {
+    setOtp(Array(6).fill(""));
+    setError("");
+    setSuccessMessage("");
     setTimer(59);
+    inputRefs.current[0]?.focus();
+
+    // Trigger the resend OTP request here before restarting the countdown.
+    try {
+      const response = await fetch(
+        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/v1/auth/resend-otp",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: verificationEmail,
+          }),
+        },
+      );
+      const responseText = await response.text();
+      let responseData = {};
+      console.log(response)
+      console.log(responseText)
+
+      if (responseText) {
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          responseData = { message: responseText };
+        }
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          responseData?.message || "failed to get OTP, try again later",
+        );
+      }
+
+      setSuccessMessage(responseData.message || "A new OTP has been sent.");
+    } 
+    
+    catch (error) {
+      setError(error.message);
+    }
+
   };
 
   const handleOtpChange = (index, value) => {
+    if (isVerifying) return;
+
     const digit = value.replace(/\D/g, "").slice(-1);
     const nextOtp = [...otp];
     nextOtp[index] = digit;
@@ -49,15 +99,63 @@ export default function OtpScreen() {
     }
   };
 
-  function verifyOTP(currentOtp = otp) {
+  async function verifyOTP(currentOtp = otp) {
     if (currentOtp.some((digit) => !digit)) {
       setError("Please enter all six digits of the OTP.");
       return;
     }
 
+    if (isVerifying) return;
+
     setError("");
-    // Submit the complete OTP here.
-    
+    setSuccessMessage("");
+    setIsVerifying(true);
+
+    try {
+      const response = await fetch(
+        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/v1/auth/verify-otp/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            otp: currentOtp.join(""),
+            email: verificationEmail,
+          }),
+        },
+      );
+
+      const responseText = await response.text();
+      let responseData = {};
+
+      if (responseText) {
+        try {
+          responseData = JSON.parse(responseText);
+        } catch {
+          throw new Error("The server returned an invalid response.");
+        }
+      }
+
+      if (!response.ok) {
+        throw new Error(
+          responseData.message ||
+            responseData.detail ||
+            "The OTP is incorrect or has expired. Please request a new code.",
+        );
+      }
+
+      setSuccessMessage(responseData.message || "OTP verified successfully.");
+      setTimeout(() => navigate("/dashboard"), 1000);
+    } catch (verificationError) {
+      setError(
+        verificationError instanceof Error
+          ? verificationError.message
+          : "Unable to verify the OTP. Please try again.",
+      );
+    } finally {
+      setIsVerifying(false);
+    }
   }
 
   return (
@@ -79,28 +177,31 @@ export default function OtpScreen() {
           </div>
 
           <div className=" space-x-4">
-            <a
-              href="#"
-              onClick={() => setActiveTab("phone")}
-              className={`btn ${activeTab === "phone" ? "bg-purple-800 text-white" : "bg-gray-100 text-gray-500"}`}
-            >
-              Phone
-            </a>
-
-            <a
-              href="#"
+            <button
+              type="button"
               onClick={() => setActiveTab("email")}
               className={`btn ${activeTab === "email" ? "bg-purple-800 text-white" : "bg-gray-100 text-gray-500"}`}
             >
               Email
-            </a>
+            </button>
+
+            <button
+              type="button"
+              disabled
+              onClick={() => setActiveTab("phone")}
+              className={`btn disabled:cursor-none ${activeTab === "phone" ? "bg-purple-800 text-white" : "bg-gray-100 text-gray-500"}`}
+            >
+              Phone
+            </button>
           </div>
 
           <div>
             <p className="font-semibold text-gray-600">
               Enter the 6-digit code sent to
             </p>
-            <p className="font-bold">+234 {}XX XXX XXXX</p>
+            <p className="font-bold">
+              {verificationEmail || "your email address"}
+            </p>
           </div>
 
           {/* OTP BOX */}
@@ -130,10 +231,16 @@ export default function OtpScreen() {
             ))}
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
+          {successMessage && (
+            <p className="text-sm text-green-600" role="status">
+              {successMessage}
+            </p>
+          )}
           {timer === 0 ? (
             <button
               type="button"
               onClick={handleResend}
+              disabled={isVerifying}
               className="cursor-pointer hover:underline text-sm font-semibold text-gray-500"
             >
               Resend code
@@ -144,8 +251,13 @@ export default function OtpScreen() {
             </span>
           )}
           <div>
-            <button className="btn primary-btn" onClick={verifyOTP}>
-              Verify OTP
+            <button
+              type="button"
+              className="btn primary-btn"
+              onClick={() => verifyOTP()}
+              disabled={isVerifying}
+            >
+              {isVerifying ? "Verifying..." : "Verify OTP"}
             </button>
           </div>
         </div>
