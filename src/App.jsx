@@ -11,6 +11,7 @@ import ServicesPage from "./Pages/ServicesPage";
 import SOSPage from "./Pages/SOSPage";
 import SettingsPage from "./Pages/SettingsPage";
 import ProfilePage from "./Pages/ProfilePage"
+import ForgotPassword from "./Components/ForgotPassword";
 
 import { Routes, Route } from "react-router";
 import Professionals from "./Pages/Professionals/Professionals";
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
 
         <Route path="register">
           <Route path="customer" element={<RegisterPage role={"customer"} />} />

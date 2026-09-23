@@ -7,6 +7,7 @@ import { BiHide, BiShow } from "react-icons/bi";
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
+import { API_BASE_URL } from "../config/api";
 
 export default function LoginPage() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -32,7 +33,7 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(
-        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/v1/auth/login/",
+        `${API_BASE_URL}/api/v1/auth/login/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -149,12 +150,12 @@ export default function LoginPage() {
                   )}
                 </div>
               </div>
-              <a
-                href="#"
+              <Link
+                to="/forgot-password"
                 className="hover:underline text-sm text-right text-purple-900 block my-4"
               >
                 Forgot Password?
-              </a>
+              </Link>
 
               <button
                 type="submit"

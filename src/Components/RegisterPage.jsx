@@ -10,6 +10,7 @@ import { ArtisanLists } from "../data/ArtisanLists";
 import { Link, useNavigate } from "react-router";
 import { ImSpinner2 } from "react-icons/im";
 import { z } from "zod";
+import { API_BASE_URL } from "../config/api";
 
 const registrationSchema = z
   .object({
@@ -124,7 +125,7 @@ export default function RegisterPage({ role }) {
 
     try {
       const response = await fetch(
-        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/v1/auth/register/",
+        `${API_BASE_URL}/api/v1/auth/register/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

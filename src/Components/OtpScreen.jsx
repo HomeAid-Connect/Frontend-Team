@@ -1,6 +1,7 @@
 import { ShieldCheckIcon } from "@heroicons/react/16/solid";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { API_BASE_URL } from "../config/api";
 
 export default function OtpScreen() {
   const [timer, setTimer] = useState(59);
@@ -35,10 +36,11 @@ export default function OtpScreen() {
     setTimer(59);
     inputRefs.current[0]?.focus();
 
+    console.log("check 1 ")
     // Trigger the resend OTP request here before restarting the countdown.
     try {
       const response = await fetch(
-        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/v1/auth/resend-otp",
+        "`${API_BASE_URL}/api/v1/auth/resend-otp`",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -47,7 +49,13 @@ export default function OtpScreen() {
           }),
         },
       );
+
+      console.log("check 2")
+      
+      console.log(response)
+
       const responseText = await response.text();
+
       let responseData = {};
       console.log(response)
       console.log(responseText)
@@ -62,7 +70,7 @@ export default function OtpScreen() {
 
       if (!response.ok) {
         throw new Error(
-          responseData?.message || "failed to get OTP, try again later",
+          responseData?.message || "Failed to get OTP, try again later",
         );
       }
 
@@ -113,7 +121,7 @@ export default function OtpScreen() {
 
     try {
       const response = await fetch(
-        "https://4dhj4dff-8000.uks1.devtunnels.ms/api/v1/auth/verify-otp/",
+        `${API_BASE_URL}/api/v1/auth/verify-otp/`,
         {
           method: "POST",
           headers: {
