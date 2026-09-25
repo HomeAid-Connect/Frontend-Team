@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, AdjustmentsHorizontalIcon, Cog6ToothIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { ArtisanLists } from "../data/ArtisanLists";
+import { ArtisanLists } from "../../data/ArtisanLists";
 
 export default function ServicesPage() {
   const navigate = useNavigate();

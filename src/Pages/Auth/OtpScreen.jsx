@@ -1,7 +1,7 @@
 import { ShieldCheckIcon } from "@heroicons/react/16/solid";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { API_BASE_URL } from "../config/api";
+import { API_BASE_URL } from "../../config/api";
 
 export default function OtpScreen() {
   const [timer, setTimer] = useState(59);

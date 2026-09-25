@@ -1,4 +1,4 @@
-import logoDark from "../assets/logo.jpeg";
+import logoDark from "../../assets/logo.jpeg";
 
 import { createElement, useRef, useState } from "react";
 import { Link } from "react-router";
@@ -6,9 +6,9 @@ import { BiSearchAlt } from "react-icons/bi";
 import { IoLocationOutline, IoNotificationsOutline } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
 import { BsFilterRight } from "react-icons/bs";
-import { ArtisanLists } from "../data/ArtisanLists.js";
+import { ArtisanLists } from "../../data/ArtisanLists.js";
 import { ArrowRightIcon } from "@heroicons/react/16/solid";
-import { ArtisansDetails } from "../data/ArtisansDetails.js";
+import { ArtisansDetails } from "../../data/ArtisansDetails.js";
 
 export default function Dashboard() {
   const search = useRef();
@@ -189,7 +189,7 @@ export default function Dashboard() {
                     </span>
                     <span aria-label="distance" className=" text-gray-400 ml-2">
                       <IoLocationOutline className="inline" />
-                      1.8 km
+                      {i.location}
                     </span>
                   </div>
 

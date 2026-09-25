@@ -1,16 +1,16 @@
 import { useState } from "react";
-import logoDark from "../assets/logo.jpeg";
-import logoLight from "../assets/logo.png";
-import artisans from "../assets/workers-login.png";
+import logoDark from "../../assets/logo.jpeg";
+import logoLight from "../../assets/logo.png";
+import artisans from "../../assets/workers-login.png";
 import { MdCancel, MdSecurity } from "react-icons/md";
 import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiCalendar, BiHide, BiShow } from "react-icons/bi";
 import { FaUser, FaMapMarkerAlt, FaPhoneAlt } from "react-icons/fa";
-import { ArtisanLists } from "../data/ArtisanLists";
+import { ArtisanLists } from "../../data/ArtisanLists";
 import { Link, useNavigate } from "react-router";
 import { ImSpinner2 } from "react-icons/im";
 import { z } from "zod";
-import { API_BASE_URL } from "../config/api";
+import { API_BASE_URL } from "../../config/api";
 
 const registrationSchema = z
   .object({

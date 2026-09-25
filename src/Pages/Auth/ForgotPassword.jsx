@@ -5,8 +5,8 @@ import { ImSpinner2 } from "react-icons/im";
 import { MdSecurity } from "react-icons/md";
 import { Link, useNavigate } from "react-router";
 import { z } from "zod";
-import logoDark from "../assets/logo.jpeg";
-import { API_BASE_URL } from "../config/api";
+import logoDark from "../../assets/logo.jpeg";
+import { API_BASE_URL } from "../../config/api";
 
 const emailSchema = z.object({
   email: z.string().trim().email("Enter a valid email address"),

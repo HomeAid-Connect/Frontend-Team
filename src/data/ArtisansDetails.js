@@ -10,8 +10,8 @@ export const ArtisansDetails = [
         skill: "Electrician",
         ratings: 4.5,
         projectsCompleted: 123,
-        distance: 121
-        
+        distance: 121,
+        location: 'Lagos'
     }, 
     {
         id: 2,
@@ -20,7 +20,9 @@ export const ArtisansDetails = [
         skill: "Plumber",
         ratings: 4.8,
         projectsCompleted: 96,
-        distance: 121
+        distance: 121,
+        location: 'Abia'
+
         
     }, 
     {
@@ -30,7 +32,9 @@ export const ArtisansDetails = [
         skill: "Cleaner",
         ratings: 4.9,
         projectsCompleted: 150,
-        distance: 121
+        distance: 121,
+        location: 'Ondo'
+
         
     }
 ]

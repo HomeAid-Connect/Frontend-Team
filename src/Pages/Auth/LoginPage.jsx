@@ -1,13 +1,14 @@
-import logo from "../assets/logo.png";
-import logoDark from "../assets/logo.jpeg";
-import artisans from "../assets/workers-login.png";
+import logo from "../../assets/logo.png";
+import logoDark from "../../assets/logo.jpeg";
+import artisans from "../../assets/workers-login.png";
 import { MdAccountBalanceWallet, MdSecurity } from "react-icons/md";
 import { GrMailOption, GrUserWorker } from "react-icons/gr";
 import { BiHide, BiShow } from "react-icons/bi";
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
-import { API_BASE_URL } from "../config/api";
+import { API_BASE_URL } from "../../config/api";
+import { useAuth } from "../../context/AuthContext";
 
 export default function LoginPage() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -18,6 +19,7 @@ export default function LoginPage() {
     message: "",
   });
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   async function handleLogin(event) {
     event.preventDefault();
@@ -49,7 +51,7 @@ export default function LoginPage() {
       }
 
       const responseData = await response.json();
-      console.log(responseData);
+      login(responseData);
       setFormState({
         loading: false,
         error: false,
@@ -107,7 +109,7 @@ export default function LoginPage() {
               {/* form-control */}
               <div className="mb-4">
                 <label className="label" htmlFor="email">
-                  Username or E-mail
+                E-mail
                 </label>
                 <div className="input-field">
                   <GrMailOption />

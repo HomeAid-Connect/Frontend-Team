@@ -1,4 +1,4 @@
-import ProfessionalSkeleton from "../../shared/ProfessionalSkeleton";
+import ProfessionalSkeleton from "../../../shared/ProfessionalSkeleton";
 
 export default function Professionals() {
   return (

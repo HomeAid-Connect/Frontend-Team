@@ -1,20 +1,20 @@
-import LoginPage from "./Components/LoginPage";
-import RegisterPage from "./Components/RegisterPage";
-import OtpScreen from "./Components/OtpScreen";
-import LandingPage from "./Components/LandingPage";
+import LoginPage from "./Pages/Auth/LoginPage";
+import RegisterPage from "./Pages/Auth/RegisterPage";
+import OtpScreen from "./Pages/Auth/OtpScreen";
+import LandingPage from "./Pages/LandingPage";
 import HomeLayout from "./shared/HomeLayout";
-import Dashboard from "./Components/Dashboard";
-import BookingsPage from "./Pages/BookingsPage";
+import Dashboard from "./Pages/Customer/Dashboard";
+import BookingsPage from "./Pages/Customer/BookingsPage";
 import MessageArtisan from "./Pages/Messages/MessageArtisan";
 import MessagesPage from "./Pages/Messages/MessagesPage";
-import ServicesPage from "./Pages/ServicesPage";
-import SOSPage from "./Pages/SOSPage";
-import SettingsPage from "./Pages/SettingsPage";
-import ProfilePage from "./Pages/ProfilePage"
-import ForgotPassword from "./Components/ForgotPassword";
+import ServicesPage from "./Pages/Customer/ServicesPage";
+import SOSPage from "./Pages/Shared/SOSPage";
+import SettingsPage from "./Pages/Shared/SettingsPage";
+import ProfilePage from "./Pages/Shared/ProfilePage"
+import ForgotPassword from "./Pages/Auth/ForgotPassword";
 
 import { Routes, Route } from "react-router";
-import Professionals from "./Pages/Professionals/Professionals";
+import Professionals from "./Pages/Customer/Professionals/Professionals";
 
 // Add Zod for validation
 // use Action() to collect formData
@@ -34,13 +34,17 @@ function App() {
           <Route path="otp" element={<OtpScreen />} />
         </Route>
 
-        <Route element={<HomeLayout />}>
+        {/* <Route element={<ProtectedRoute />}> */}
+          <Route element={<HomeLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="Services" element={<ServicesPage />} />
           <Route path="Bookings" element={<BookingsPage />} />
           <Route path="SOS" element={<SOSPage />} />
 
-          <Route path="Professionals" element={<Professionals/>}/>
+          <Route path="Professionals">
+          <Route index element={<Professionals/>}/>
+          <Route path=":service/:id" element={<Professionals/>}/>
+          </Route>
           
           <Route path="Messages">
           <Route index element={<MessagesPage />} />
@@ -52,9 +56,14 @@ function App() {
             <Route path="profile" element={<ProfilePage/>} />
           </Route>
 
-        </Route>
+          </Route>
+        {/* </Route> */}
+
       </Routes>
     </>
+
+  
+
   );
 }
 
