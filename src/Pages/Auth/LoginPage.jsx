@@ -38,7 +38,7 @@ export default function LoginPage() {
         `${API_BASE_URL}/api/v1/auth/login/`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json"},
           body: JSON.stringify(data),
         },
       );
@@ -59,10 +59,18 @@ export default function LoginPage() {
         message: responseData.message || "Welcome back",
       });
 
-      setTimeout(() => {
-        navigate("/dashboard", { replace: true });
-      }, 1000);
-    } catch (error) {
+      if(responseData.user.role === 'ARTISAN') {
+        setTimeout(() => {
+          navigate("/artisan/dashboard", { replace: true });
+        }, 1000);
+      }
+      else {
+        setTimeout(() => {
+          navigate("/dashboard", { replace: true });
+        }, 1000);
+      }
+    }
+    catch (error) {
       setFormState({
         loading: false,
         error: true,
@@ -78,7 +86,7 @@ export default function LoginPage() {
   return (
     <section className="overflow-hidden relative font-manrope">
       <div className="flex justify-center  items-center sm:p-1 lg:p-8">
-        <div className="flex max-w-4xl md:m-3 bg-amber-300 w-full rounded-4xl overflow-hidden ">
+        <div className="flex max-w-4xl md:m-3 w-full rounded-4xl overflow-hidden ">
           <div className="bg-linear-to-r w-full grow-2 hidden md:flex  from-purple-950 from  items-center justify-between flex-col to-purple-800">
             <div className="justify-self-center mt-5">
               <img src={logo} alt="HomeAid Logo" width={300} />

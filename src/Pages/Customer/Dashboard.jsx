@@ -3,22 +3,25 @@ import logoDark from "../../assets/logo.jpeg";
 import { createElement, useRef, useState } from "react";
 import { Link } from "react-router";
 import { BiSearchAlt } from "react-icons/bi";
-import { IoLocationOutline, IoNotificationsOutline } from "react-icons/io5";
+import { IoLocationOutline } from "react-icons/io5";
 import { FaLocationDot } from "react-icons/fa6";
 import { BsFilterRight } from "react-icons/bs";
 import { ArtisanLists } from "../../data/ArtisanLists.js";
 import { ArrowRightIcon } from "@heroicons/react/16/solid";
 import { ArtisansDetails } from "../../data/ArtisansDetails.js";
+import { useAuth } from "../../context/AuthContext.jsx";
+import NotificationBell from "../../components/NotificationBell.jsx";
 
 export default function Dashboard() {
   const search = useRef();
+  const { user } = useAuth();
   const [isServicesPaused, setIsServicesPaused] = useState(false);
   // const profileImage = localStorage.getItem("homeaid-profile-image");
   const profileImage = null;
-  const profileName = "Nehemiah";
+  const profileName = user?.username || "User"
   const profileInitial = profileName.charAt(0).toUpperCase();
 
-  let Notifications = [1, "bola", 6, 78];
+  let Notifications = [1, "bola", 78];
   const timeOfDay = (() => {
     const currentHour = new Date().getHours();
     if (currentHour < 12) return "Morning";
@@ -36,14 +39,8 @@ export default function Dashboard() {
         />
 
         <div className="flex items-center gap-2">
-          <div className="bg-white p-2 m-2 rounded-full h-fit relative ">
-            <IoNotificationsOutline />
-            {Notifications.length >= 1 && (
-              <div className="absolute text-[9px] bg-red-600 top-0 -right-1 w-4 h-4 flex items-center justify-center text-white rounded-full font-semibold">
-                {Notifications.length}
-              </div>
-            )}
-          </div>
+         
+          <NotificationBell Notifications={Notifications}/>
 
           <Link
             to="/Settings/profile"
@@ -68,7 +65,7 @@ export default function Dashboard() {
           <p className="text-sm font-medium text-purple-950">
             Good {timeOfDay},
           </p>
-          <h2 className="text-xl font-bold text-purple-800">Nehemiah👋</h2>
+          <h2 className="text-xl font-bold text-purple-800">{profileName}👋</h2>
           <div className="flex items-center gap-2">
             <FaLocationDot className="w-2 text-purple-800" />
             <span className="text-gray-500 text-xs">Lagos, Nigeria</span>
@@ -151,12 +148,12 @@ export default function Dashboard() {
       <div className="mt-8">
         <div className="flex  justify-between">
           <h3 className="text-purple-900 font-bold">Top Professionals</h3>
-          <div className="group text-purple-800 flex items-center gap-1 mr-2 whitespace-nowrap">
+          <Link to="/professionals" className="group text-purple-800 flex items-center gap-1 mr-2 whitespace-nowrap">
             <span className="text-[10px] font-bold group-hover:text-purple-700">
               See all
             </span>
             <ArrowRightIcon className="w-3 h-3 group-hover:translate-x-0.5 group-hover:transform transition-all" />
-          </div>
+          </Link>
         </div>
 
         <div className=" grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-2">
@@ -207,10 +204,6 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
-
-        
-
-
       </div>
     </>
   );

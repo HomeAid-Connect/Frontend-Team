@@ -12,6 +12,8 @@ import SOSPage from "./Pages/Shared/SOSPage";
 import SettingsPage from "./Pages/Shared/SettingsPage";
 import ProfilePage from "./Pages/Shared/ProfilePage"
 import ForgotPassword from "./Pages/Auth/ForgotPassword";
+import ProtectedRoute from "./routes/ProtectedRoute"
+import ArtisanDashboard from "./Pages/Artisan/ArtisanDashboard";
 
 import { Routes, Route } from "react-router";
 import Professionals from "./Pages/Customer/Professionals/Professionals";
@@ -34,7 +36,7 @@ function App() {
           <Route path="otp" element={<OtpScreen />} />
         </Route>
 
-        {/* <Route element={<ProtectedRoute />}> */}
+        <Route element={<ProtectedRoute />}>
           <Route element={<HomeLayout />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="Services" element={<ServicesPage />} />
@@ -56,8 +58,11 @@ function App() {
             <Route path="profile" element={<ProfilePage/>} />
           </Route>
 
+        <Route path="artisan/dashboard" element={<ArtisanDashboard/>}/>
+
           </Route>
-        {/* </Route> */}
+        </Route>
+
 
       </Routes>
     </>
